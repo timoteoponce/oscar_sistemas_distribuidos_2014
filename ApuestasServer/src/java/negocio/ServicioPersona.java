@@ -7,17 +7,21 @@ package negocio;
 import datos.Persona;
 import datos.repositorio.Repositorio;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.inject.Named;
 
 /**
  *
  * @author timoteo
  */
+@Named
+@Stateless
 public class ServicioPersona {
     
-    private Logger log = LoggerFactory.getLogger(ServicioPersona.class);
+    private Logger log = Logger.getLogger(ServicioPersona.class.getSimpleName());
+    
     @Inject
     Repositorio repositorio;
     

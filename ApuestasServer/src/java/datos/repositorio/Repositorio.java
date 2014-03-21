@@ -5,6 +5,7 @@
 package datos.repositorio;
 
 import java.util.*;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -13,6 +14,7 @@ import javax.persistence.Query;
  *
  * @author timoteo
  */
+@Named
 public class Repositorio {
 
     @PersistenceContext
@@ -43,7 +45,7 @@ public class Repositorio {
             queryStr.append(" WHERE ");
             for (Iterator<String> it = propiedades.keySet().iterator(); it.hasNext();) {
                 String prop = it.next();
-                queryStr.append(prop + "=" + ":" + prop + " ");
+                queryStr.append("t." + prop + "=" + ":" + prop + " ");
                 queryStr.append(it.hasNext() ? " AND " : "");
             }
         }

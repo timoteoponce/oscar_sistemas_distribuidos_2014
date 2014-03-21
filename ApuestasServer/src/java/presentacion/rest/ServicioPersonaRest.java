@@ -27,8 +27,8 @@ import negocio.ServicioPersona;
 @Path("/personas")
 public class ServicioPersonaRest {
     
-    //@Inject
-    //ServicioPersona servicioPersona;
+    @Inject
+    ServicioPersona servicioPersona;
     
     @GET
     @Path("/list")
@@ -36,9 +36,9 @@ public class ServicioPersonaRest {
     public List<Persona> list() {
         Persona persona = new Persona();
         persona.setNombre("persona: " + System.currentTimeMillis());
-        //servicioPersona.registrarPersona(persona);
-        //return servicioPersona.seleccionarTodos();
-        return Arrays.asList(persona);
+        servicioPersona.registrarPersona(persona);
+        return servicioPersona.seleccionarTodos();
+        //return Arrays.asList(persona);
     }
 
         
