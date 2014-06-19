@@ -4,3 +4,6 @@
 *.jar
 *.war
 *.ear
+/Puzzle/nbproject/private/
+/Rompecabezas/nbproject/private/
+/Rompecabezas/build/
