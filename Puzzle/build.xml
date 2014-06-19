@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="help" name="Puzzle">
+	<!-- 
+	================================================
+						IMPORTS
+	================================================
+	-->
+	<!-- 
+	================================================
+						COMMON PROPERTIES
+	================================================
+	-->		
+	<property environment="env"/>	
+	<property name="report.dir" value="build/report"/>
+	<property name="build.root.dir" value="build" />
+	<property name="build.dir" value="build/classes" />
+	<property name="build.test.dir" value="build/test" />
+	<property name="src.dir" value="src" />
+	<property name="src.test.dir" value="test" />
+	<property name="debuglevel" value="source,lines,vars"/>
+	<property name="target" value="1.6"/>
+	<property name="source" value="1.6"/>
+
+	<target name="help">
+		<echo>
+	Targets life-cycle
+	=================
+	> setup		: Resolves the requires libraries defined in ivy.xml and initializes paths
+	> clean		: Cleans the  workspace from build files 	
+	> compile	: Setup the workspace and compiles the sources, directories [${src.dir}, ${src.test.dir}]
+	> test		: Runs the identified tests
+	> test_report	: Export tests results in XML format, directory [${build.report}]
+	> build 	: All steps up until [test_report]
+	> package	: Builds the project and packages all compiled files and runtime resources as JAR or WAR
+	> dist		: All steps up until [package]
+	> install	: Installs the current project packages in the shared environment (ivy,maven,webobjects)
+		</echo>
+	</target>		
+	<!-- 
+	================================================
+						SETUP
+	================================================
+	-->			
+	<target name="setup">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.test.dir}"/>		
+		<copy includeemptydirs="false" todir="${build.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
+		
+		<path id="project.classpath">
+			<pathelement location="${build.dir}"/>
+			<fileset dir="lib" includes="*.jar"/>
+		</path>
+	</target>
+	<!-- 
+	================================================
+						CLEAN
+	================================================
+	-->
+    <target name="clean">
+        <delete dir="${build.root.dir}"/>
+    	<delete dir="dist"/>
+    </target>
+	<!-- 
+	================================================
+						COMPILE
+	================================================
+	-->	
+	<target name="compile" depends="setup">
+		<echo message="${ant.project.name}: ${ant.file}"/>		
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${build.dir}" source="${source}" target="${target}">
+			<src path="${src.dir}"/>
+			<classpath refid="project.classpath"/>
+		</javac>
+		<!-- test -->
+		<javac srcdir="${src.test.dir}" destdir="${build.test.dir}" classpathref="project.classpath"/>
+	</target>
+	<!-- 
+	================================================
+						TEST
+	================================================
+	-->
+	<target name="test" depends="compile">		
+		<delete dir="${report.dir}" />
+		<mkdir dir="${report.dir}" />
+	</target>
+	
+	<target name="test_report" depends="test">
+	</target>
+	<!-- 
+	================================================
+				BUILD, PACKAGE, INSTALL
+	================================================
+	-->
+	<target name="build">
+		<antcall target="test_report"/>
+	</target>
+	
+	
+	<target name="package" depends="test_report">
+		<mkdir dir="dist"/>
+		<copy todir="dist" file="resources/config.conf"/>
+        <jar jarfile="dist/${ant.project.name}.jar">
+            <fileset dir="src" includes="*.properties"/>
+            <fileset dir="build/classes" includes="**/*.class"/>
+			<fileset dir="resources" includes="**/*" excludes="*.db"/>
+            <zipgroupfileset dir="lib" includes="*.jar" excludes="*source*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="presentacion.Main"/>
+            </manifest>
+        </jar>
+    </target>
+	
+	<target name="install">
+		<antcall target="package"/>
+	</target>
+	
+	<target name="dist">
+		<antcall target="package"/>
+	</target>
+</project>
